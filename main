@@ -10,7 +10,7 @@ INCLUDE Irvine32.inc
 
 .data
 ; main menu strings
-chooseName byte "Please enter your name: ", 0
+chooseName byte "Welcome! Please enter your name: ", 0
 selection byte "Please select one of the following:", 0
 choice1 byte "1: Display my available credit", 0
 choice2 byte "2: Make a purchase", 0
@@ -56,9 +56,9 @@ isPremiumUser byte 0
 .code
 
 main proc
+mov edx, offset chooseName
+call writestring
 
-call dumpRegs
-	
 exit
 main endp
 end main
