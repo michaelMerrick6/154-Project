@@ -1,0 +1,64 @@
+; ------------------------------------------------------------
+; Program Description :
+; Author: Josiah Liao
+; Creation Date :
+; Language: IA-32 x86
+; Assembler: Microsoft Macro Assembler (MASM)
+; Collaboration:
+; ----------------------------------------------------------
+INCLUDE Irvine32.inc
+
+.data
+; main menu strings
+chooseName byte "Please enter your name: ", 0
+selection byte "Please select one of the following:", 0
+choice1 byte "1: Display my available credit", 0
+choice2 byte "2: Make a purchase", 0
+choice3 byte "3: Play lame regular version of the guessing game", 0
+choice4 byte "4: Play cool Team Doge version of the guessing game", 0
+choice5 byte "5: Display my statistics", 0
+choice6 byte "6: See advanced options", 0
+choice7 byte "7: Exit game", 0
+; choice 1 strings
+creditMsg byte "Your available credit balance: ", 0
+; choice 2 strings
+buyPremium byte "Press 'p' to purchase premium subscription.", 0
+donate byte "Press 'd' to donate to Team Doge nonprofit organization. Every dollar helps!", 0
+buyCredits byte "Press 'c' to purchase additional credits.", 0
+; purchase strings
+amountIfDonate byte "How much would you like to donate? ", 0
+amountIfCredits byte "How many credits would you like to purchase ($20 or less)? ", 0
+purchaseMsg byte "Please enter your details below:", 0
+creditCard byte "Credit Card Number: ", 0
+cvcSecCode byte "CVC Security Code (on the back of the card): ", 0
+SSN byte "Social Security Number: ", 0
+address byte "Billing Address: ", 0
+pin byte "Please enter your PIN: ", 0
+purchaseExit byte "Thank you for your purchase. You will now be redirected to the main screen.", 0
+; choice 3 strings
+; choice 4 strings
+; choice 5 strings
+displayCorrect byte "Your correct guesses: ", 0
+displayWrong byte "Your incorrect guesses: ", 0
+; choice 6 strings
+; choice 7 strings
+exitMsg byte "Goodbye! Thanks for playing!", 0
+; variables
+credits word 0
+MAX_ALLOWED word equ 20
+amount word 0
+correctGuesses word 0
+missedGuesses word 0
+name byte "", 0
+isPremiumUser byte 0
+; ad messages
+
+.code
+
+main proc
+
+call dumpRegs
+	
+exit
+main endp
+end main
