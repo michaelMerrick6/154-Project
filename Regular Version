@@ -1,0 +1,48 @@
+; ------------------------------------------------------------
+; Program Description :
+; Author: Josiah Liao
+; Creation Date :
+; Language: IA-32 x86
+; Assembler: Microsoft Macro Assembler (MASM)
+; Collaboration:
+; ----------------------------------------------------------
+INCLUDE Irvine32.inc
+
+.data
+; main menu strings
+chooseName byte "Welcome! Please enter your name: ", 0
+selection byte "Please select one of the following:", 0
+choice1 byte "1: Display my available credit", 0
+choice2 byte "2: Add credits to my account", 0
+choice3 byte "3: Play the guessing game", 0
+choice4 byte "4: Display my statistics", 0
+choice5 byte "5: Exit game", 0
+; choice 1 strings
+creditMsg byte "Your available credit balance: ", 0
+; choice 2 strings
+amountIfCredits byte "How many credits would you like to purchase ($20 or less)? ", 0
+purchaseExit byte "Your credits have been added successfully. You will now be redirected to the main screen.", 0
+purchaseFailed byte "That is an invalid number of credits. Please try again.", 0
+; choice 3 strings
+; choice 4 strings
+displayCorrect byte "Your correct guesses: ", 0
+displayWrong byte "Your incorrect guesses: ", 0
+; choice 5 strings
+exitMsg byte "Goodbye! Thanks for playing!", 0
+; variables
+credits word 0
+MAX_ALLOWED word equ 20
+amount word 0
+correctGuesses word 0
+missedGuesses word 0
+name byte "", 0
+
+.code
+
+main proc
+mov edx, offset chooseName
+call writestring
+
+exit
+main endp
+end main
