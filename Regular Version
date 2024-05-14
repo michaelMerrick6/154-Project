@@ -39,6 +39,7 @@ correctGuesses word 0
 missedGuesses word 0
 name byte "", 0
 choice word 0
+random word 0
 
 .code
 
@@ -97,6 +98,16 @@ two:
 ; choice 3
 three:
   ; make the game yay
+  ; random number
+  mov eax, 10
+  call randomrange
+  inc eax
+  mov random, eax
+  ; user choice
+  ; guessing message
+  call readint
+  mov choice, eax
+  ; conditional
 
 ; choice 4
 four:
