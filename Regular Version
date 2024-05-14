@@ -1,10 +1,9 @@
 ; ------------------------------------------------------------
-; Program Description :
-; Author: Josiah Liao
-; Creation Date :
-; Language: IA-32 x86
-; Assembler: Microsoft Macro Assembler (MASM)
-; Collaboration:
+; CMPR 154 - Spring 2024
+; Team Name: Team Doge
+; Team Members: Josiah Liao, Ashutosh Bharadwaj, David Calderon, Michael Merrick
+; Creation Date: 13 May 2024
+; Collaboration: None so far
 ; ----------------------------------------------------------
 INCLUDE Irvine32.inc
 
