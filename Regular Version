@@ -36,12 +36,36 @@ amount word 0
 correctGuesses word 0
 missedGuesses word 0
 name byte "", 0
+choice word 0
 
 .code
 
 main proc
+; get name
 mov edx, offset chooseName
 call writestring
+call readstring
+; home screen
+home:
+mov edx, offset choice1
+call writestring
+call crlf
+mov edx, offset choice2
+call writestring
+call crlf
+mov edx, offset choice3
+call writestring
+call crlf
+mov edx, offset choice4
+call writestring
+call crlf
+mov edx, offset choice5
+call writestring
+call crlf
+call readint
+; validate input: TO-DO
+; switch statement
+; yay i hate this
 
 exit
 main endp
