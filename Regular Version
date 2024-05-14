@@ -24,8 +24,11 @@ purchaseExit byte "Your credits have been added successfully. You will now be re
 purchaseFailed byte "That is an invalid number of credits. Please try again.", 0
 ; choice 3 strings
 ; choice 4 strings
+displayGames byte "Games played: ", 0
 displayCorrect byte "Your correct guesses: ", 0
 displayWrong byte "Your incorrect guesses: ", 0
+displayGain byte "Money gained: ", 0
+displayLoss byte "Money lost: ", 0
 ; choice 5 strings
 exitMsg byte "Goodbye! Thanks for playing!", 0
 ; variables
@@ -44,27 +47,103 @@ main proc
 mov edx, offset chooseName
 call writestring
 call readstring
+
 ; home screen
 home:
-mov edx, offset choice1
-call writestring
-call crlf
-mov edx, offset choice2
-call writestring
-call crlf
-mov edx, offset choice3
-call writestring
-call crlf
-mov edx, offset choice4
-call writestring
-call crlf
-mov edx, offset choice5
-call writestring
-call crlf
-call readint
+  call clrscr
+  mov edx, offset choice1
+  call writestring
+  call crlf
+  mov edx, offset choice2
+  call writestring
+  call crlf
+  mov edx, offset choice3
+  call writestring
+  call crlf
+  mov edx, offset choice4
+  call writestring
+  call crlf
+  mov edx, offset choice5
+  call writestring
+  call crlf
+  call readint
 ; validate input: TO-DO
 ; switch statement
-; yay i hate this
+; end of home
+  call clrscr
+
+; choice 1
+one:
+  mov edx, offset creditMsg
+  call writestring
+  mov eax, credits
+  call writeint
+  call crlf
+  jump home
+
+; choice 2
+two:
+  mov edx, offset amountIfCredits
+  call writestring
+  call readint
+  mov choice, eax
+  ; if > 20 blah blah blah
+  add credits, eax
+  call clrscr
+  mov edx, purchaseExit
+  call writestring
+  jump home
+
+; choice 3
+three:
+  ; make the game yay
+
+; choice 4
+four:
+  ; display stats
+  mov edx, offset name
+  call writestring
+  call crlf
+  mov edx, offset creditMsg
+  call writestring
+  mov eax, credits
+  call writeint
+  call crlf
+  mov edx, offset displayGames
+  call writestring
+  mov eax, correctGuesses
+  add eax, missedGuesses
+  call writeint
+  call crlf
+  mov edx, offset displayCorrect
+  call writestring
+  mov eax, correctGuesses
+  call writeint
+  call crlf
+  mov edx, offset displayWrong
+  call writestring
+  mov eax, missedGuesses
+  call writeint
+  call crlf
+  mov edx, offset displayGain
+  call writestring
+  mov eax, correctGuesses
+  call writeint
+  call crlf
+  mov edx, offset displayLoss
+  call writestring
+  mov eax, missedGuesses
+  call writeint
+  call crlf  
+  call waitmsg
+  jump home
+
+; choice 5
+five:
+  ; exit game
+  mov edx, exitMsg
+  call writestring
+  call crlf
 
 exit
 main endp
