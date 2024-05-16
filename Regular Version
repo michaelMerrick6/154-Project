@@ -131,6 +131,7 @@ three:
   ; show rules
   norules:
   ; random number
+  dec credits
   mov eax, 10
   call randomrange
   inc eax
