@@ -16,6 +16,7 @@ choice2 byte "2: Add credits to my account", 0
 choice3 byte "3: Play the guessing game", 0
 choice4 byte "4: Display my statistics", 0
 choice5 byte "5: Exit game", 0
+errorMsg byte "Invalid input, please try again.", 0
 ; choice 1 strings
 creditMsg byte "Your available credit balance: ", 0
 ; choice 2 strings
@@ -53,6 +54,9 @@ call readstring
 ; home screen
 home:
   call clrscr
+  mov edx, offset selection
+  call writestring
+  call crlf
   mov edx, offset choice1
   call writestring
   call crlf
@@ -68,14 +72,32 @@ home:
   mov edx, offset choice5
   call writestring
   call crlf
+readChoice:
   call readint
-; validate input: TO-DO
+  mov choice, eax
+  jo badChoice  
 ; switch statement
-; end of home
+  cmp choice, 1
+  je one
+  cmp choice, 2
+  je two
+  cmp choice, 3
+  je three
+  cmp choice, 4
+  je four
+  cmp choice, 5
+  je five
+; error message
+bad Choice:
+  mov edx, errorMsg
+  call writestring
+  call waitmsg
   call clrscr
+  jmp home
 
 ; choice 1
 one:
+  call clrscr
   mov edx, offset creditMsg
   call writestring
   mov eax, credits
@@ -85,6 +107,7 @@ one:
 
 ; choice 2
 two:
+  call clrscr
   mov edx, offset amountIfCredits
   call writestring
   call readint
@@ -98,6 +121,7 @@ two:
 
 ; choice 3
 three:
+  call clrscr
   ; make the game yay
   ; rules yay
   mov eax, correctGuesses
@@ -129,6 +153,7 @@ three:
 
 ; choice 4
 four:
+  call clrscr 
   ; display stats
   mov edx, offset name
   call writestring
@@ -169,6 +194,7 @@ four:
 
 ; choice 5
 five:
+  call clrscr
   ; exit game
   mov edx, exitMsg
   call writestring
