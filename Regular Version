@@ -47,6 +47,7 @@ main proc
 ; get name
 mov edx, offset chooseName
 call writestring
+; ooh actually this doesn't work, fix this later :)
 call readstring
 
 ; home screen
