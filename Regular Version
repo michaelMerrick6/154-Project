@@ -80,7 +80,7 @@ one:
   mov eax, credits
   call writeint
   call crlf
-  jump home
+  jmp home
 
 ; choice 2
 two:
@@ -93,11 +93,18 @@ two:
   call clrscr
   mov edx, purchaseExit
   call writestring
-  jump home
+  jmp home
 
 ; choice 3
 three:
   ; make the game yay
+  ; rules yay
+  mov eax, correctGuesses
+  add eax, missedGuesses
+  cmp eax, 0
+  jne norules
+  ; show rules
+  norules:
   ; random number
   mov eax, 10
   call randomrange
@@ -108,6 +115,16 @@ three:
   call readint
   mov choice, eax
   ; conditional
+  cmp choice, random
+  je correct
+  ; good job message
+  inc correctGuesses
+  add credits, 2
+  jmp home
+  correct:
+  ; bad job message
+  inc missedGuesses
+  jmp home
 
 ; choice 4
 four:
@@ -147,7 +164,7 @@ four:
   call writeint
   call crlf  
   call waitmsg
-  jump home
+  jmp home
 
 ; choice 5
 five:
