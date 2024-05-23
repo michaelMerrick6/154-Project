@@ -119,6 +119,7 @@ one:
   mov eax, credits
   call writeint
   call crlf
+  call waitmsg
   jmp home
 
 ; Choice 2
@@ -132,12 +133,15 @@ two:
   jng goodCredits
   mov edx, offset purchaseFailed
   call writestring
+  mov eax, 2000
+  call delay
   jmp two
   goodCredits:
     add credits, eax
     call clrscr
     mov edx, offset purchaseExit
     call writestring
+    call waitmsg
   jmp home
 
 ; Choice 3
@@ -170,6 +174,7 @@ three:
   call writestring
   inc correctGuesses
   add credits, 2
+  call waitmsg
   jmp home
   incorrect:
   ; bad job message
@@ -178,6 +183,7 @@ three:
   mov eax, random
   call writeint
   inc missedGuesses
+  call waitmsg
   jmp home
 
 ; Choice 4
