@@ -145,7 +145,8 @@ two:
     mov edx, offset purchaseExit
     call writestring
     call crlf
-    call waitmsg
+    mov eax, 2000
+    call delay
   jmp home
 
 ; Choice 3
