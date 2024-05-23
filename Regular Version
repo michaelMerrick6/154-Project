@@ -43,15 +43,15 @@ displayLoss byte "Money lost: ", 0
 exitMsg byte "Goodbye! Thanks for playing!", 0
 
 ; Program variables
-maxLength word equ 80
-credits word 0
-MAX_ALLOWED word equ 20
+maxLength equ 80
+credits dword 0
+MAX_ALLOWED equ 20
 amount word 0
-correctGuesses word 0
-missedGuesses word 0
-name byte maxLength+1 dup(?)
-choice word 0
-random word 0
+correctGuesses dword 0
+missedGuesses dword 0
+name byte (maxLength+1) dup(0)
+choice dword 0
+random dword 0
 
 .code
 
@@ -60,7 +60,7 @@ main proc
 ; Get name
 mov edx, offset chooseName
 call writestring
-mov edx, name
+mov edx, offset name
 mov ecx, maxLength
 call readstring
 
@@ -103,8 +103,8 @@ readChoice:
   je five
 
 ; Error message
-bad Choice:
-  mov edx, errorMsg
+badChoice:
+  mov edx, offset errorMsg
   call writestring
   call waitmsg
   call clrscr
@@ -135,7 +135,7 @@ two:
   goodCredits:
     add credits, eax
     call clrscr
-    mov edx, purchaseExit
+    mov edx, offset purchaseExit
     call writestring
   jmp home
 
@@ -162,17 +162,17 @@ three:
   call readint
   mov choice, eax
   ; conditional
-  cmp choice, random
+  cmp eax, random
   jne incorrect
   ; good job message
-  mov edx, goodGuess
+  mov edx, offset goodGuess
   call writestring
   inc correctGuesses
   add credits, 2
   jmp home
   incorrect:
   ; bad job message
-  mov edx, badGuess
+  mov edx, offset badGuess
   call writestring
   mov eax, random
   call writeint
@@ -224,7 +224,7 @@ four:
 five:
   call clrscr
   ; exit game
-  mov edx, exitMsg
+  mov edx, offset exitMsg
   call writestring
   call crlf
 
