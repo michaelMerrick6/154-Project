@@ -149,6 +149,7 @@ three:
   cmp eax, 0
   jne norules
   ; show rules
+  call waitmsg
   norules:
   ; random number
   dec credits
