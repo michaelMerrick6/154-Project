@@ -5,6 +5,7 @@
 ; Creation Date: 13 May 2024
 ; Collaboration: None so far
 ; ----------------------------------------------------------
+
 INCLUDE Irvine32.inc
 
 .data
@@ -49,7 +50,7 @@ MAX_ALLOWED equ 20
 amount word 0
 correctGuesses dword 0
 missedGuesses dword 0
-name byte (maxLength+1) dup(0)
+username byte maxLength+1 dup(?)
 choice dword 0
 random dword 0
 
@@ -60,7 +61,7 @@ main proc
 ; Get name
 mov edx, offset chooseName
 call writestring
-mov edx, offset name
+mov edx, offset username
 mov ecx, maxLength
 call readstring
 
@@ -183,7 +184,7 @@ three:
 four:
   call clrscr 
   ; display stats
-  mov edx, offset name
+  mov edx, offset username
   call writestring
   call crlf
   mov edx, offset creditMsg
