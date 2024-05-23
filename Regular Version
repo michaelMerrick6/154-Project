@@ -30,6 +30,7 @@ purchaseFailed byte "That is an invalid number of credits. Please try again.", 0
 
 ; Choice 3 strings
 ; RULES are for losers
+tryGuess byte "Guess a number from 1-10. Good luck! Your guess: ", 0
 goodGuess byte "Nice job! You guessed correctly!", 0
 badGuess byte "Too bad. You guessed incorrectly. The correct answer was ", 0
 
@@ -141,6 +142,7 @@ two:
     call clrscr
     mov edx, offset purchaseExit
     call writestring
+    call crlf
     call waitmsg
   jmp home
 
@@ -155,6 +157,7 @@ three:
   jne norules
   ; show rules
   call waitmsg
+  call clrscr
   norules:
   ; random number
   dec credits
@@ -164,6 +167,8 @@ three:
   mov random, eax
   ; user choice
   ; guessing message
+  mov edx, offset tryGuess
+  call writestring
   call readint
   mov choice, eax
   ; conditional
@@ -174,6 +179,7 @@ three:
   call writestring
   inc correctGuesses
   add credits, 2
+  call crlf
   call waitmsg
   jmp home
   incorrect:
@@ -182,6 +188,7 @@ three:
   call writestring
   mov eax, random
   call writeint
+  call crlf
   inc missedGuesses
   call waitmsg
   jmp home
