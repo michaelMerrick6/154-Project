@@ -35,6 +35,7 @@ goodGuess byte "Nice job! You guessed correctly!", 0
 badGuess byte "Too bad. You guessed incorrectly. The correct answer was ", 0
 
 ; Choice 4 strings
+displayName byte "Name: ", 0
 displayGames byte "Games played: ", 0
 displayCorrect byte "Your correct guesses: ", 0
 displayWrong byte "Your incorrect guesses: ", 0
@@ -198,6 +199,8 @@ three:
 four:
   call clrscr 
   ; display stats
+  mov edx, offset displayName
+  call writestring
   mov edx, offset username
   call writestring
   call crlf
