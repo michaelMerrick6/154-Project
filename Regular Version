@@ -108,6 +108,7 @@ readChoice:
 badChoice:
   mov edx, offset errorMsg
   call writestring
+  call crlf
   call waitmsg
   call clrscr
   jmp home
