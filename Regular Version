@@ -28,6 +28,9 @@ purchaseExit byte "Your credits have been added successfully. You will now be re
 purchaseFailed byte "That is an invalid number of credits. Please try again.", 0
 
 ; Choice 3 strings
+; RULES are for losers
+goodGuess byte "Nice job! You guessed correctly!", 0
+badGuess byte "Too bad. You guessed incorrectly. The correct answer was ", 0
 
 ; Choice 4 strings
 displayGames byte "Games played: ", 0
@@ -40,12 +43,13 @@ displayLoss byte "Money lost: ", 0
 exitMsg byte "Goodbye! Thanks for playing!", 0
 
 ; Program variables
+maxLength word equ 80
 credits word 0
 MAX_ALLOWED word equ 20
 amount word 0
 correctGuesses word 0
 missedGuesses word 0
-name byte "", 0
+name byte maxLength+1 dup(?)
 choice word 0
 random word 0
 
@@ -56,8 +60,8 @@ main proc
 ; Get name
 mov edx, offset chooseName
 call writestring
-
-; ooh actually this doesn't work, fix this later :) 😑
+mov edx, name
+mov ecx, maxLength
 call readstring
 
 ; Home screen
@@ -123,11 +127,16 @@ two:
   call writestring
   call readint
   mov choice, eax
-  ; if > 20 blah blah blah
-  add credits, eax
-  call clrscr
-  mov edx, purchaseExit
+  cmp choice, 20
+  jng goodCredits
+  mov edx, offset purchaseFailed
   call writestring
+  jmp two
+  goodCredits:
+    add credits, eax
+    call clrscr
+    mov edx, purchaseExit
+    call writestring
   jmp home
 
 ; Choice 3
@@ -153,13 +162,19 @@ three:
   mov choice, eax
   ; conditional
   cmp choice, random
-  je correct
+  jne incorrect
   ; good job message
+  mov edx, goodGuess
+  call writestring
   inc correctGuesses
   add credits, 2
   jmp home
-  correct:
+  incorrect:
   ; bad job message
+  mov edx, badGuess
+  call writestring
+  mov eax, random
+  call writeint
   inc missedGuesses
   jmp home
 
