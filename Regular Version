@@ -38,8 +38,8 @@ badGuess byte "Too bad. You guessed incorrectly. The correct answer was ", 0
 displayGames byte "Games played: ", 0
 displayCorrect byte "Your correct guesses: ", 0
 displayWrong byte "Your incorrect guesses: ", 0
-displayGain byte "Money gained: ", 0
-displayLoss byte "Money lost: ", 0
+displayGain byte "Money gained: $", 0
+displayLoss byte "Money lost: $", 0
 
 ; Choice 5 strings
 exitMsg byte "Goodbye! Thanks for playing!", 0
@@ -119,7 +119,7 @@ one:
   mov edx, offset creditMsg
   call writestring
   mov eax, credits
-  call writeint
+  call writedec
   call crlf
   call waitmsg
   jmp home
@@ -188,7 +188,7 @@ three:
   mov edx, offset badGuess
   call writestring
   mov eax, random
-  call writeint
+  call writedec
   call crlf
   inc missedGuesses
   call waitmsg
@@ -204,33 +204,33 @@ four:
   mov edx, offset creditMsg
   call writestring
   mov eax, credits
-  call writeint
+  call writedec
   call crlf
   mov edx, offset displayGames
   call writestring
   mov eax, correctGuesses
   add eax, missedGuesses
-  call writeint
+  call writedec
   call crlf
   mov edx, offset displayCorrect
   call writestring
   mov eax, correctGuesses
-  call writeint
+  call writedec
   call crlf
   mov edx, offset displayWrong
   call writestring
   mov eax, missedGuesses
-  call writeint
+  call writedec
   call crlf
   mov edx, offset displayGain
   call writestring
   mov eax, correctGuesses
-  call writeint
+  call writedec
   call crlf
   mov edx, offset displayLoss
   call writestring
   mov eax, missedGuesses
-  call writeint
+  call writedec
   call crlf  
   call waitmsg
   jmp home
