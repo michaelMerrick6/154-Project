@@ -173,6 +173,7 @@ three:
   cmp eax, 0
   jne norules
   mov edx, offset rules
+ call writestring
   ; show rules
   call waitmsg
   call clrscr
