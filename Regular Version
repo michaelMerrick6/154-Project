@@ -11,7 +11,17 @@ INCLUDE Irvine32.inc
 .data
 
 ; Main Menu strings
-chooseName byte "Welcome! Please enter your name: ", 0
+chooseName byte "  _____   ____   _____ ______    _____                     _                _____   ", 13, 10
+           byte " |  __ \ / __ \ / ____|  ____|  / ____|                   (_)              / ____|                     _ ", 13, 10
+           byte " | |  | | |  | | |  __| |__    | |  __ _   _  ___  ___ ___ _ _ __   __ _  | |  __  __ _ _ __ ___   ___(_)", 13, 10
+           byte " | |  | | |  | | | |_ |  __|   | | |_ | | | |/ _ \/ __/ __| | '_ \ / _` | | | |_ |/ _` | '_ ` _ \ / _ \  ", 13, 10
+           byte " | |__| | |__| | |__| | |____  | |__| | |_| |  __/\__ \__ \ | | | | (_| | | |__| | (_| | | | | | |  __/_ ", 13, 10
+           byte " |_____/ \____/ \_____|______|  \_____|\__,_|\___||___/___/_|_| |_|\__, |  \_____|\__,_|_| |_| |_|\___(_)", 13, 10
+           byte "                                                                    __/ |                                ", 13, 10
+           byte "                                                                   |___/                                 ", 13, 10
+byte "Welcome!", 13,10  
+byte "Please enter your name: ", 0
+
 selection byte "Please select one of the following:", 0
 choice1 byte "1: Display my available credit", 0
 choice2 byte "2: Add credits to my account", 0
