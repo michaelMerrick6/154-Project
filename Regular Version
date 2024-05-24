@@ -172,6 +172,7 @@ three:
   add eax, missedGuesses
   cmp eax, 0
   jne norules
+  mov edx, offset rules
   ; show rules
   call waitmsg
   call clrscr
