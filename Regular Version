@@ -30,6 +30,10 @@ purchaseFailed byte "That is an invalid number of credits. Please try again.", 0
 
 ; Choice 3 strings
 ; RULES are for losers
+  rules byte "RULES:", 13, 10, 13, 10
+         byte "If you guess the correct number,", 13, 10
+         byte "you will earn $2.00. If you guess", 13, 10
+         byte "incorrectly, you will not earn any money.", 13, 10, 13, 10, 0
 tryGuess byte "Guess a number from 1-10. Good luck! Your guess: ", 0
 goodGuess byte "Nice job! You guessed correctly!", 0
 badGuess byte "Too bad. You guessed incorrectly. The correct answer was ", 0
