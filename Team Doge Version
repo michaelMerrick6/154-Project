@@ -343,7 +343,66 @@ je three
 ; Choice 4
 four:
   call clrscr
+cmp credits, 0
+jne play
+mov edx, offset noCredits
+call writestring
+mov eax, 2000
+call delay
+jmp home
+play:
+  ; make the game yay
 
+  ; rules yay (this has to be redone for this version)
+  mov eax, correctGuesses
+  add eax, missedGuesses
+  cmp eax, 0
+  jne norules
+  ; show rules
+mov edx, offset rules
+ call writestring
+  call waitmsg
+  call clrscr
+
+  norules:
+  ; random number
+  dec credits
+  mov eax, 10
+  call randomrange
+  inc eax
+  mov random, eax
+  ; user choice
+  ; guessing message
+  mov edx, offset tryGuess
+  call writestring
+  call readint
+  mov choice, eax
+  ; conditional
+  cmp eax, random
+  jne incorrect
+  ; good job message
+  mov edx, offset goodGuess
+  call writestring
+  inc correctGuesses
+  add credits, 2
+  call crlf
+  call waitmsg
+  jmp home
+  incorrect:
+  ; bad job message
+  mov edx, offset badGuess
+  call writestring
+  mov eax, random
+  call writedec
+  call crlf
+  inc missedGuesses
+  ; loop game
+mov edx, offset ifLoop
+call writestring
+call readchar
+mov choice, al
+cmp choice, "1"
+je three
   jmp home
 
 ; Choice 5
