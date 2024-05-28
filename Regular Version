@@ -39,6 +39,7 @@ purchaseExit byte "Your credits have been added successfully. You will now be re
 purchaseFailed byte "That is an invalid number of credits. Please try again.", 0
 
 ; Choice 3 strings
+noCredits byte "Not enough credits. Please buy more before playing.", 0
 ; RULES are for losers
   rules byte "RULES:", 13, 10, 13, 10
          byte "If you guess the correct number,", 13, 10
@@ -47,6 +48,7 @@ purchaseFailed byte "That is an invalid number of credits. Please try again.", 0
 tryGuess byte "Guess a number from 1-10. Good luck! Your guess: ", 0
 goodGuess byte "Nice job! You guessed correctly!", 0
 badGuess byte "Too bad. You guessed incorrectly. The correct answer was ", 0
+ifLoop byte "Press 1 to play again, press anything else to move to the home screen: ", 0
 
 ; Choice 4 strings
 displayName byte "Name: ", 0
@@ -166,15 +168,23 @@ two:
 ; Choice 3
 three:
   call clrscr
+cmp credits, 0
+jne play
+mov edx, offset noCredits
+call writestring
+mov eax, 2000
+call delay
+jmp home
+play:
   ; make the game yay
   ; rules yay
   mov eax, correctGuesses
   add eax, missedGuesses
   cmp eax, 0
   jne norules
-  mov edx, offset rules
- call writestring
   ; show rules
+mov edx, offset rules
+ call writestring
   call waitmsg
   call clrscr
   norules:
@@ -209,7 +219,13 @@ three:
   call writedec
   call crlf
   inc missedGuesses
-  call waitmsg
+  ; loop game
+mov edx, offset ifLoop
+call writestring
+call readchar
+mov choice, al
+cmp choice, "1"
+je three
   jmp home
 
 ; Choice 4
