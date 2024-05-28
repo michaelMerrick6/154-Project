@@ -27,10 +27,12 @@ choice4 byte "4: Play cool Team Doge version of the guessing game", 0
 choice5 byte "5: Display my statistics", 0
 choice6 byte "6: See advanced options", 0
 choice7 byte "7: Exit game", 0
+errorMsg byte "Invalid input, please try again.", 0
+
 ; choice 1 strings
 creditMsg byte "Your available credit balance: ", 0
 ; choice 2 strings
-buyPremium byte "Press 'p' to purchase premium subscription.", 0
+buyPremium byte "Press 'p' to purchase premium subscription ($10).", 0
 donate byte "Press 'd' to donate to Team Doge nonprofit organization. Every dollar helps!", 0
 buyCredits byte "Press 'c' to purchase additional credits.", 0
 ; purchase strings
@@ -145,7 +147,6 @@ badChoice:
   call writestring
   call crlf
   call waitmsg
-  call clrscr
   jmp home
 
 ; Choice 1
@@ -162,6 +163,37 @@ one:
 ; Choice 2
 two:
   call clrscr
+; choose purchase
+mov edx, offset buyCredits
+call writestring
+call crlf
+mov edx, offset donate
+call writestring
+call crlf
+cmp isPremiumUser, 1
+je noPremium
+mov edx, offset buyPremium
+call writestring
+call crlf
+noPremium:
+call readchar
+mov choice, al
+cmp choice, "c"
+je credits
+cmp choice, "d"
+je donate
+cmp isPremiumUser,1
+je badPurchase
+cmp choice, "p"
+je premium
+badPurchase:
+mov edx, offset errorMsg
+call writestring
+call crlf
+call waitmsg
+jmp two
+
+credits:
   mov edx, offset amountIfCredits
   call writestring
   call readint
@@ -174,6 +206,10 @@ two:
   call delay
   jmp two
   goodCredits:
+mov eax, "c"
+push eax
+jmp billing
+addCredits:
     add credits, eax
     call clrscr
     mov edx, offset purchaseExit
@@ -182,6 +218,64 @@ two:
     mov eax, 2000
     call delay
   jmp home
+
+donate:
+mov edx, offset amountIfDonate
+call writestring
+call readdec
+mov eax, "d"
+push eax
+jmp billing
+finishDonate:
+call clrscr
+mov edx, offset purchaseExit
+call writestring
+call crlf
+mov eax, 2000
+call delay
+jmp home
+
+premium:
+mov eax, "p"
+push eax
+jmp billing
+finishPremium:
+mov isPremiumUser, 1
+call clrscr
+mov edx, offset purchaseExit
+call writestring
+call crlf
+mov eax, 2000
+call delay
+jmp home
+
+billing:
+call clrscr
+mov edx, offset purchaseMsg
+call writestring
+call crlf
+mov edx, offset creditCard
+call writestring
+call readstring
+mov edx, offset cvcSecCode
+call writestring
+call readstring
+mov edx, offset SSN
+call writestring
+call readstring
+mov edx, offset address
+call writestring
+call readstring
+mov edx, offset pin
+call writestring
+call readstring
+pop eax
+cmp eax, "c"
+je addCredits
+cmp eax, "d"
+je finishDonate
+cmp eax, "p"
+je finishPremium
 
 ; Choice 3
 three:
