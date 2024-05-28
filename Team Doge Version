@@ -9,7 +9,16 @@ INCLUDE Irvine32.inc
 
 .data
 ; main menu strings
-chooseName byte "Welcome! Please enter your name: ", 0
+chooseName byte "  _____   ____   _____ ______    _____                     _                _____   ", 13, 10
+           byte " |  __ \ / __ \ / ____|  ____|  / ____|                   (_)              / ____|                     _ ", 13, 10
+           byte " | |  | | |  | | |  __| |__    | |  __ _   _  ___  ___ ___ _ _ __   __ _  | |  __  __ _ _ __ ___   ___(_)", 13, 10
+           byte " | |  | | |  | | | |_ |  __|   | | |_ | | | |/ _ \/ __/ __| | '_ \ / _` | | | |_ |/ _` | '_ ` _ \ / _ \  ", 13, 10
+           byte " | |__| | |__| | |__| | |____  | |__| | |_| |  __/\__ \__ \ | | | | (_| | | |__| | (_| | | | | | |  __/_ ", 13, 10
+           byte " |_____/ \____/ \_____|______|  \_____|\__,_|\___||___/___/_|_| |_|\__, |  \_____|\__,_|_| |_| |_|\___(_)", 13, 10
+           byte "                                                                    __/ |                                ", 13, 10
+           byte "                                                                   |___/                                 ", 13, 10
+byte "Welcome!", 13,10  
+byte "Please enter your name: ", 0
 selection byte "Please select one of the following:", 0
 choice1 byte "1: Display my available credit", 0
 choice2 byte "2: Make a purchase", 0
@@ -27,6 +36,7 @@ buyCredits byte "Press 'c' to purchase additional credits.", 0
 ; purchase strings
 amountIfDonate byte "How much would you like to donate? ", 0
 amountIfCredits byte "How many credits would you like to purchase ($20 or less)? ", 0
+purchaseFailed byte "That is an invalid number of credits. Please try again.", 0
 purchaseMsg byte "Please enter your details below:", 0
 creditCard byte "Credit Card Number: ", 0
 cvcSecCode byte "CVC Security Code (on the back of the card): ", 0
@@ -35,28 +45,269 @@ address byte "Billing Address: ", 0
 pin byte "Please enter your PIN: ", 0
 purchaseExit byte "Thank you for your purchase. You will now be redirected to the main screen.", 0
 ; choice 3 strings
+noCredits byte "Not enough credits. Please buy more before playing.", 0
+; RULES are for losers
+  rules byte "RULES:", 13, 10, 13, 10
+         byte "If you guess the correct number,", 13, 10
+         byte "you will earn $2.00. If you guess", 13, 10
+         byte "incorrectly, you will not earn any money.", 13, 10, 13, 10, 0
+tryGuess byte "Guess a number from 1-10. Good luck! Your guess: ", 0
+goodGuess byte "Nice job! You guessed correctly!", 0
+badGuess byte "Too bad. You guessed incorrectly. The correct answer was ", 0
+ifLoop byte "Press 1 to play again, press anything else to move to the home screen: ", 0
 ; choice 4 strings
 ; choice 5 strings
+displayName byte "Name: ", 0
+displayGames byte "Games played: ", 0
 displayCorrect byte "Your correct guesses: ", 0
 displayWrong byte "Your incorrect guesses: ", 0
+displayGain byte "Money gained: $", 0
+displayLoss byte "Money lost: $", 0
 ; choice 6 strings
+; advanced statistics and impossible game
 ; choice 7 strings
 exitMsg byte "Goodbye! Thanks for playing!", 0
 ; variables
-credits word 0
+maxLength equ 80
+credits dword 0
 MAX_ALLOWED word equ 20
 amount word 0
-correctGuesses word 0
-missedGuesses word 0
-name byte "", 0
+correctGuesses dword 0
+missedGuesses dword 0
+username byte maxLength+1 dup(?)
 isPremiumUser byte 0
+choice dword 0
+random dword 0
 ; ad messages
 
 .code
 
 main proc
+
+; Get name
 mov edx, offset chooseName
 call writestring
+mov edx, offset username
+mov ecx, maxLength
+call readstring
+
+; Home screen
+home:
+  call clrscr
+  mov edx, offset selection
+  call writestring
+  call crlf
+  mov edx, offset choice1
+  call writestring
+  call crlf
+  mov edx, offset choice2
+  call writestring
+  call crlf
+  mov edx, offset choice3
+  call writestring
+  call crlf
+  mov edx, offset choice4
+  call writestring
+  call crlf
+  mov edx, offset choice5
+  call writestring
+  call crlf
+  mov edx, offset choice6
+  call writestring
+  call crlf
+  mov edx, offset choice7
+  call writestring
+  call crlf
+readChoice:
+  call readint
+  mov choice, eax
+  jo badChoice  
+
+; Switch statement
+  cmp choice, 1
+  je one
+  cmp choice, 2
+  je two
+  cmp choice, 3
+  je three
+  cmp choice, 4
+  je four
+  cmp choice, 5
+  je five
+  cmp choice, 6
+  je six
+  cmp choice, 7
+  je seven
+
+; Error message
+badChoice:
+  mov edx, offset errorMsg
+  call writestring
+  call crlf
+  call waitmsg
+  call clrscr
+  jmp home
+
+; Choice 1
+one:
+  call clrscr
+  mov edx, offset creditMsg
+  call writestring
+  mov eax, credits
+  call writedec
+  call crlf
+  call waitmsg
+  jmp home
+
+; Choice 2
+two:
+  call clrscr
+  mov edx, offset amountIfCredits
+  call writestring
+  call readint
+  mov choice, eax
+  cmp choice, 20
+  jng goodCredits
+  mov edx, offset purchaseFailed
+  call writestring
+  mov eax, 2000
+  call delay
+  jmp two
+  goodCredits:
+    add credits, eax
+    call clrscr
+    mov edx, offset purchaseExit
+    call writestring
+    call crlf
+    mov eax, 2000
+    call delay
+  jmp home
+
+; Choice 3
+three:
+  call clrscr
+cmp credits, 0
+jne play
+mov edx, offset noCredits
+call writestring
+mov eax, 2000
+call delay
+jmp home
+play:
+  ; make the game yay
+  ; rules yay
+  mov eax, correctGuesses
+  add eax, missedGuesses
+  cmp eax, 0
+  jne norules
+  ; show rules
+mov edx, offset rules
+ call writestring
+  call waitmsg
+  call clrscr
+  norules:
+  ; random number
+  dec credits
+  mov eax, 10
+  call randomrange
+  inc eax
+  mov random, eax
+  ; user choice
+  ; guessing message
+  mov edx, offset tryGuess
+  call writestring
+  call readint
+  mov choice, eax
+  ; conditional
+  cmp eax, random
+  jne incorrect
+  ; good job message
+  mov edx, offset goodGuess
+  call writestring
+  inc correctGuesses
+  add credits, 2
+  call crlf
+  call waitmsg
+  jmp home
+  incorrect:
+  ; bad job message
+  mov edx, offset badGuess
+  call writestring
+  mov eax, random
+  call writedec
+  call crlf
+  inc missedGuesses
+  ; loop game
+mov edx, offset ifLoop
+call writestring
+call readchar
+mov choice, al
+cmp choice, "1"
+je three
+  jmp home
+
+; Choice 4
+four:
+  call clrscr
+
+  jmp home
+
+; Choice 5
+five:
+  call clrscr 
+  ; display stats
+  mov edx, offset displayName
+  call writestring
+  mov edx, offset username
+  call writestring
+  call crlf
+  mov edx, offset creditMsg
+  call writestring
+  mov eax, credits
+  call writedec
+  call crlf
+  mov edx, offset displayGames
+  call writestring
+  mov eax, correctGuesses
+  add eax, missedGuesses
+  call writedec
+  call crlf
+  mov edx, offset displayCorrect
+  call writestring
+  mov eax, correctGuesses
+  call writedec
+  call crlf
+  mov edx, offset displayWrong
+  call writestring
+  mov eax, missedGuesses
+  call writedec
+  call crlf
+  mov edx, offset displayGain
+  call writestring
+  mov eax, correctGuesses
+  call writedec
+  call crlf
+  mov edx, offset displayLoss
+  call writestring
+  mov eax, missedGuesses
+  call writedec
+  call crlf  
+  call waitmsg
+  jmp home
+
+; Choice 6
+six:
+  call clrscr
+
+  jmp home
+
+; Choice 7
+seven:
+  call clrscr
+  ; exit game
+  mov edx, offset exitMsg
+  call writestring
+  call crlf
 
 exit
 main endp
