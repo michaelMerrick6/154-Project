@@ -209,7 +209,6 @@ mov edx, offset rules
   inc correctGuesses
   add credits, 2
   call crlf
-  call waitmsg
   jmp loop
   incorrect:
   ; bad job message
