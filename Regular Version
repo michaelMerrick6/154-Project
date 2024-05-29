@@ -210,7 +210,7 @@ mov edx, offset rules
   add credits, 2
   call crlf
   call waitmsg
-  jmp home
+  jmp loop
   incorrect:
   ; bad job message
   mov edx, offset badGuess
@@ -220,6 +220,7 @@ mov edx, offset rules
   call crlf
   inc missedGuesses
   ; loop game
+loop:
 mov edx, offset ifLoop
 call writestring
 call readchar
