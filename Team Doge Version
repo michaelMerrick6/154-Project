@@ -22,10 +22,10 @@ byte "Please enter your name: ", 0
 selection byte "Please select one of the following:", 0
 choice1 byte "1: Display my available credit", 0
 choice2 byte "2: Make a purchase", 0
-choice3 byte "3: Play lame regular version of the guessing game", 0
-choice4 byte "4: Play cool Team Doge version of the guessing game", 0
+choice3 byte "3: Play regular version of the guessing game", 0
+choice4 byte "4: Play Team Doge version of the guessing game", 0
 choice5 byte "5: Display my statistics", 0
-choice6 byte "6: See advanced options", 0
+choice6 byte "6: Play impossible game", 0
 choice7 byte "7: Exit game", 0
 errorMsg byte "Invalid input, please try again.", 0
 
@@ -55,9 +55,16 @@ noCredits byte "Not enough credits. Please buy more before playing.", 0
          byte "incorrectly, you will not earn any money.", 13, 10, 13, 10, 0
 tryGuess byte "Guess a number from 1-10. Good luck! Your guess: ", 0
 goodGuess byte "Nice job! You guessed correctly!", 0
+oneGuess byte "You were one off the correct answer. You will still gain money, but the correct answer was ", 0
 badGuess byte "Too bad. You guessed incorrectly. The correct answer was ", 0
 ifLoop byte "Press 1 to play again, press anything else to move to the home screen: ", 0
 ; choice 4 strings
+rulesDoge byte "RULES:", 13, 10, 13, 10
+         byte "If you guess the correct number,", 13, 10
+         byte "you will earn $6.00. If you guess", 13, 10
+         byte "a number adjacent to the correct", 13, 10
+         byte "number, you will earn $2.00. If you guess", 13, 10  
+         byte "incorrectly, you will not earn any money.", 13, 10, 13, 10, 0
 ; choice 5 strings
 displayName byte "Name: ", 0
 displayGames byte "Games played: ", 0
@@ -66,7 +73,8 @@ displayWrong byte "Your incorrect guesses: ", 0
 displayGain byte "Money gained: $", 0
 displayLoss byte "Money lost: $", 0
 ; choice 6 strings
-; advanced statistics and impossible game
+rulesImp byte "RULES:", 13, 10, 13, 10
+           byte "It is simple. The game is impossible. Good luck!", 0
 ; choice 7 strings
 exitMsg byte "Goodbye! Thanks for playing!", 0
 ; variables
@@ -76,6 +84,9 @@ MAX_ALLOWED word equ 20
 amount word 0
 correctGuesses dword 0
 missedGuesses dword 0
+correctGuessesDoge dword 0
+missedGuessesDoge dword 0
+oneGuessesDoge dword 0
 username byte maxLength+1 dup(?)
 isPremiumUser byte 0
 choice dword 0
@@ -351,15 +362,14 @@ mov eax, 2000
 call delay
 jmp home
 play:
-  ; make the game yay
-
+  ; make the game yay   
   ; rules yay (this has to be redone for this version)
-  mov eax, correctGuesses
-  add eax, missedGuesses
+  mov eax, correctGuessesDoge
+  add eax, missedGuessesDoge
   cmp eax, 0
   jne norules
   ; show rules
-mov edx, offset rules
+mov edx, offset rulesDoge
  call writestring
   call waitmsg
   call clrscr
@@ -378,16 +388,21 @@ mov edx, offset rules
   call readint
   mov choice, eax
   ; conditional
-  cmp eax, random
+  sub eax, random
+  cmp eax, 1
+  je oneaway
+cmp eax, -1
+je oneaway
+mov choice, eax
+cmp eax, random
   jne incorrect
   ; good job message
   mov edx, offset goodGuess
   call writestring
-  inc correctGuesses
-  add credits, 2
+  inc correctGuessesDoge
+  add credits, 6
   call crlf
-  call waitmsg
-  jmp home
+  jmp loop
   incorrect:
   ; bad job message
   mov edx, offset badGuess
@@ -395,8 +410,19 @@ mov edx, offset rules
   mov eax, random
   call writedec
   call crlf
-  inc missedGuesses
+  inc missedGuessesDoge
+jmp loop
+oneAway:
+mov edx, offset oneGuess
+call writestring
+mov eax, random
+call writedec
+inc oneGuessesDoge
+add credits, 2
+call crlf
+
   ; loop game
+loop:
 mov edx, offset ifLoop
 call writestring
 call readchar
