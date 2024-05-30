@@ -68,13 +68,17 @@ rulesDoge byte "RULES:", 13, 10, 13, 10
 ; choice 5 strings
 displayName byte "Name: ", 0
 displayGames byte "Games played: ", 0
-displayCorrect byte "Your correct guesses: ", 0
-displayWrong byte "Your incorrect guesses: ", 0
+displayCorrect byte "Your correct guesses (regular verison): ", 0
+displayWrong byte "Your incorrect guesses (regular version): ", 0
+displayGood byte "Your correct guesses (Doge version): ", 0
+displayClose byte "Your close guesses (Doge version): ", 0
+displayBad byte "Your incorrect guesses (Doge version): ", 0
+displayImp byte "Your incorrect guesses (impossible version): ", 0
 displayGain byte "Money gained: $", 0
 displayLoss byte "Money lost: $", 0
 ; choice 6 strings
 rulesImp byte "RULES:", 13, 10, 13, 10
-           byte "It is simple. The game is impossible. Good luck!", 0
+           byte "The game is impossible. That's it. Good luck!", 0
 ; choice 7 strings
 exitMsg byte "Goodbye! Thanks for playing!", 0
 ; variables
@@ -87,6 +91,7 @@ missedGuesses dword 0
 correctGuessesDoge dword 0
 missedGuessesDoge dword 0
 oneGuessesDoge dword 0
+guessImp dword 0
 username byte maxLength+1 dup(?)
 isPremiumUser byte 0
 choice dword 0
@@ -428,7 +433,7 @@ call writestring
 call readchar
 mov choice, al
 cmp choice, "1"
-je three
+je four
   jmp home
 
 ; Choice 5
@@ -461,14 +466,39 @@ five:
   mov eax, missedGuesses
   call writedec
   call crlf
+mov edx, offset displayGood
+call writestring
+mov eax, correctGuessesDoge
+call writedec
+call crlf
+mov edx, offset displayClose
+call writestring
+mov eax, oneGuessesDoge
+call writedec
+call crlf
+mov edx, offset displayBad
+call writestring
+mov eax, missedGuessesDoge
+call writedec
+call crlf
+mov edx, offset displayImp
+call writestring
+mov eax, guessImp
+call writedec
+call crlf
   mov edx, offset displayGain
   call writestring
   mov eax, correctGuesses
+mov ebx, correctGuessesDoge
+mul ebx, 5
+add eax, ebx
+mov eax, oneGuessesDoge
   call writedec
   call crlf
   mov edx, offset displayLoss
   call writestring
   mov eax, missedGuesses
+add eax, missedGuessesDoge
   call writedec
   call crlf  
   call waitmsg
@@ -476,8 +506,56 @@ five:
 
 ; Choice 6
 six:
+call clrscr
+cmp credits, 0
+jne play
+mov edx, offset noCredits
+call writestring
+mov eax, 2000
+call delay
+jmp home
+play:
+  ; make the game yay
+  ; rules yay
+  mov eax, correctGuesses
+  add eax, missedGuesses
+  cmp eax, 0
+  jne norules
+  ; show rules
+mov edx, offset rulesImp
+ call writestring
+  call waitmsg
   call clrscr
-
+  norules:
+  ; random number
+  dec credits
+  ; user choice
+  ; guessing message
+  mov edx, offset tryGuess
+  call writestring
+  call readint
+  mov choice, eax
+  ; bad job message
+  mov edx, offset badGuess
+  call writestring
+  mov eax, choice
+cmp choice, 10
+je sub
+inc eax
+jmp print
+sub:
+dec eax
+print:
+  call writedec
+  call crlf
+  inc guessImp
+  ; loop game
+mov edx, offset ifLoop
+call writestring
+call readchar
+mov choice, al
+cmp choice, "1"
+je six
   jmp home
 
 ; Choice 7
