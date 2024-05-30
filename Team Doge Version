@@ -1,20 +1,24 @@
 ; ------------------------------------------------------------
-; CMPR 154 - Spring 2024
-; Team Name: Team Doge
-; Team Members: Josiah Liao, Ashutosh Bharadwaj, David Calderon, Michael Merrick
-; Creation Date: 13 May 2024
-; Collaboration: None so far
+; main.asm is a program that ...
+; Ashutosh Bharadwaj
+; CMPR - 154 - Spring 2024
+; March 27, 2024
+; Language: IA-32 x86
+; Assembler: Microsoft Macro Assembler (MASM)
+; Collaboration: Me
+; Unique Instructions: 15 (mov, call, jmp, cmp, jo, je, jne, jng, add, sub, inc, dec, mul, push, pop)
 ; ----------------------------------------------------------
+
 INCLUDE Irvine32.inc
 
 .data
 ; main menu strings
 chooseName byte "  _____   ____   _____ ______    _____                     _                _____   ", 13, 10
-           byte " |  __ \ / __ \ / ____|  ____|  / ____|                   (_)              / ____|                     _ ", 13, 10
-           byte " | |  | | |  | | |  __| |__    | |  __ _   _  ___  ___ ___ _ _ __   __ _  | |  __  __ _ _ __ ___   ___(_)", 13, 10
+           byte " |  __ \ / __ \ / ____|  ____|  / ____|                   (_)              / ____|                      _ ", 13, 10
+           byte " | |  | | |  | | |  __| |__    | |  __ _   _  ___  ___ ___ _ _ __   __ _  | |  __  __ _ _ __ ___   ___ (_)", 13, 10
            byte " | |  | | |  | | | |_ |  __|   | | |_ | | | |/ _ \/ __/ __| | '_ \ / _` | | | |_ |/ _` | '_ ` _ \ / _ \  ", 13, 10
-           byte " | |__| | |__| | |__| | |____  | |__| | |_| |  __/\__ \__ \ | | | | (_| | | |__| | (_| | | | | | |  __/_ ", 13, 10
-           byte " |_____/ \____/ \_____|______|  \_____|\__,_|\___||___/___/_|_| |_|\__, |  \_____|\__,_|_| |_| |_|\___(_)", 13, 10
+           byte " | |__| | |__| | |__| | |____  | |__| | |_| |  __/\__ \__ \ | | | | (_| | | |__| | (_| | | | | | |  __/ _", 13, 10
+           byte " |_____/ \____/ \_____|______|  \_____|\__,_|\___||___/___/_|_| |_|\__, |  \_____|\__,_|_| |_| |_|\___|(_)", 13, 10
            byte "                                                                    __/ |                                ", 13, 10
            byte "                                                                   |___/                                 ", 13, 10
 byte "Welcome!", 13,10  
@@ -84,7 +88,7 @@ exitMsg byte "Goodbye! Thanks for playing!", 0
 ; variables
 maxLength equ 80
 credits dword 0
-MAX_ALLOWED word equ 20
+MAX_ALLOWED equ 20
 amount word 0
 correctGuesses dword 0
 missedGuesses dword 0
@@ -96,6 +100,7 @@ username byte maxLength+1 dup(?)
 isPremiumUser byte 0
 choice dword 0
 random dword 0
+smol byte 0
 ; ad messages
 
 .code
@@ -193,14 +198,14 @@ call writestring
 call crlf
 noPremium:
 call readchar
-mov choice, al
-cmp choice, "c"
-je credits
-cmp choice, "d"
-je donate
+mov smol, al
+cmp smol, "c"
+je credit
+cmp smol, "d"
+je donating
 cmp isPremiumUser,1
 je badPurchase
-cmp choice, "p"
+cmp smol, "p"
 je premium
 badPurchase:
 mov edx, offset errorMsg
@@ -209,7 +214,7 @@ call crlf
 call waitmsg
 jmp two
 
-credits:
+credit:
   mov edx, offset amountIfCredits
   call writestring
   call readint
@@ -226,6 +231,7 @@ mov eax, "c"
 push eax
 jmp billing
 addCredits:
+    mov eax, choice
     add credits, eax
     call clrscr
     mov edx, offset purchaseExit
@@ -235,7 +241,7 @@ addCredits:
     call delay
   jmp home
 
-donate:
+donating:
 mov edx, offset amountIfDonate
 call writestring
 call readdec
@@ -297,25 +303,25 @@ je finishPremium
 three:
   call clrscr
 cmp credits, 0
-jne play
+jne play3
 mov edx, offset noCredits
 call writestring
 mov eax, 2000
 call delay
 jmp home
-play:
+play3:
   ; make the game yay
   ; rules yay
   mov eax, correctGuesses
   add eax, missedGuesses
   cmp eax, 0
-  jne norules
+  jne norules3
   ; show rules
 mov edx, offset rules
  call writestring
   call waitmsg
   call clrscr
-  norules:
+  norules3:
   ; random number
   dec credits
   mov eax, 10
@@ -330,7 +336,7 @@ mov edx, offset rules
   mov choice, eax
   ; conditional
   cmp eax, random
-  jne incorrect
+  jne incorrect3
   ; good job message
   mov edx, offset goodGuess
   call writestring
@@ -339,7 +345,7 @@ mov edx, offset rules
   call crlf
   call waitmsg
   jmp home
-  incorrect:
+  incorrect3:
   ; bad job message
   mov edx, offset badGuess
   call writestring
@@ -351,8 +357,8 @@ mov edx, offset rules
 mov edx, offset ifLoop
 call writestring
 call readchar
-mov choice, al
-cmp choice, "1"
+mov smol, al
+cmp smol, "1"
 je three
   jmp home
 
@@ -360,26 +366,26 @@ je three
 four:
   call clrscr
 cmp credits, 0
-jne play
+jne play4
 mov edx, offset noCredits
 call writestring
 mov eax, 2000
 call delay
 jmp home
-play:
+play4:
   ; make the game yay   
   ; rules yay (this has to be redone for this version)
   mov eax, correctGuessesDoge
   add eax, missedGuessesDoge
   cmp eax, 0
-  jne norules
+  jne norules4
   ; show rules
 mov edx, offset rulesDoge
  call writestring
   call waitmsg
   call clrscr
 
-  norules:
+  norules4:
   ; random number
   dec credits
   mov eax, 10
@@ -398,17 +404,17 @@ mov edx, offset rulesDoge
   je oneaway
 cmp eax, -1
 je oneaway
-mov choice, eax
+mov eax, choice
 cmp eax, random
-  jne incorrect
+  jne incorrect4
   ; good job message
   mov edx, offset goodGuess
   call writestring
   inc correctGuessesDoge
   add credits, 6
   call crlf
-  jmp loop
-  incorrect:
+  jmp loops
+  incorrect4:
   ; bad job message
   mov edx, offset badGuess
   call writestring
@@ -416,7 +422,7 @@ cmp eax, random
   call writedec
   call crlf
   inc missedGuessesDoge
-jmp loop
+jmp loops
 oneAway:
 mov edx, offset oneGuess
 call writestring
@@ -427,12 +433,12 @@ add credits, 2
 call crlf
 
   ; loop game
-loop:
+loops:
 mov edx, offset ifLoop
 call writestring
 call readchar
-mov choice, al
-cmp choice, "1"
+mov smol, al
+cmp smol, "1"
 je four
   jmp home
 
@@ -488,17 +494,20 @@ call writedec
 call crlf
   mov edx, offset displayGain
   call writestring
-  mov eax, correctGuesses
-mov ebx, correctGuessesDoge
-mul ebx, 5
-add eax, ebx
-mov eax, oneGuessesDoge
+  mov ebx, correctGuesses
+mov eax, correctGuessesDoge
+mov ecx, 5
+mul ecx
+add ebx, eax
+add ebx, oneGuessesDoge
+mov eax, ebx
   call writedec
   call crlf
   mov edx, offset displayLoss
   call writestring
   mov eax, missedGuesses
 add eax, missedGuessesDoge
+add eax, guessImp
   call writedec
   call crlf  
   call waitmsg
@@ -524,6 +533,7 @@ play:
   ; show rules
 mov edx, offset rulesImp
  call writestring
+ call crlf
   call waitmsg
   call clrscr
   norules:
@@ -540,10 +550,10 @@ mov edx, offset rulesImp
   call writestring
   mov eax, choice
 cmp choice, 10
-je sub
+je subtract
 inc eax
 jmp print
-sub:
+subtract:
 dec eax
 print:
   call writedec
@@ -553,8 +563,8 @@ print:
 mov edx, offset ifLoop
 call writestring
 call readchar
-mov choice, al
-cmp choice, "1"
+mov smol, al
+cmp smol, "1"
 je six
   jmp home
 
