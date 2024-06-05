@@ -3,7 +3,7 @@
 ; Team Name: Team Doge
 ; Team Member Names: Ashutosh Bharadwaj, David Calderon, Josiah Liao, Michael Merrick
 ; Creation Date: May 13, 2024
-; Collaboration: csudh.edu
+; Collaboration: csudh.edu (documentation for Irvine functions)
 ; ----------------------------------------------------------
 
 ; Unique Instructions: 17 (mov, call, jmp, cmp, jo, je, jne, jng, jg, jl, add, sub, inc, dec, mul, push, pop)
@@ -190,6 +190,7 @@ one:
   jmp home
 
 ; Choice 2
+; allows user to add negative credits/donate negative money because why not
 two:
   call clrscr
 ; Choose purchase
@@ -512,6 +513,10 @@ five:
   call writestring
   mov eax, correctGuesses
   add eax, missedGuesses
+add eax, correctGuessesDoge
+add eax, missedGuessesDoge
+add eax, oneGuessesDoge
+add eax, guessImp
   call writedec
   call crlf
   mov edx, offset displayCorrect
