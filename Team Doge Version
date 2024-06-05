@@ -6,7 +6,7 @@
 ; Collaboration: csudh.edu
 ; ----------------------------------------------------------
 
-; Unique Instructions: 15 (mov, call, jmp, cmp, jo, je, jne, jng, add, sub, inc, dec, mul, push, pop)
+; Unique Instructions: 17 (mov, call, jmp, cmp, jo, je, jne, jng, jg, jl, add, sub, inc, dec, mul, push, pop)
 
 INCLUDE Irvine32.inc
 
@@ -218,6 +218,7 @@ credit:
   call writestring
   call readint
   mov choice, eax
+  jo error2Credit
   cmp choice, 20
   jng goodCredits
   mov edx, offset purchaseFailed
@@ -239,11 +240,19 @@ addCredits:
     mov eax, 2000
     call delay
   jmp home
+error2Credit:
+mov edx, offset errorMsg
+call writestring
+call crlf
+call waitmsg
+call clrscr
+jmp credit
 
 donating:
 mov edx, offset amountIfDonate
 call writestring
 call readdec
+jo error2Donate
 mov eax, "d"
 push eax
 jmp billing
@@ -255,6 +264,13 @@ call crlf
 mov eax, 2000
 call delay
 jmp home
+error2Donate:
+mov edx, offset errorMsg
+call writestring
+call crlf
+call waitmsg
+call clrscr
+jmp donating
 
 premium:
 mov eax, "p"
@@ -270,6 +286,7 @@ mov eax, 2000
 call delay
 jmp home
 
+; Billing is non-functional, does not store payment information. This is just for aesthetic enhancement.
 billing:
 call clrscr
 mov edx, offset purchaseMsg
@@ -329,10 +346,18 @@ mov edx, offset rules
   mov random, eax
   ; user choice
   ; guessing message
+  choose3:
   mov edx, offset tryGuess
   call writestring
   call readint
   mov choice, eax
+; input validation
+  jo badInput3
+  cmp choice, 10
+  jg badInput3
+  cmp choice, 1
+  jl badInput3
+
   ; conditional
   cmp eax, random
   jne incorrect3
@@ -360,6 +385,13 @@ mov smol, al
 cmp smol, "1"
 je three
   jmp home
+badInput3:
+mov edx, offset errorMsg
+call writestring
+call crlf
+call waitmsg
+call clrscr
+jmp choose3
 
 ; Choice 4
 four:
@@ -373,7 +405,7 @@ call delay
 jmp home
 play4:
   ; make the game yay   
-  ; rules yay (this has to be redone for this version)
+  ; rules yay
   mov eax, correctGuessesDoge
   add eax, missedGuessesDoge
   cmp eax, 0
@@ -393,10 +425,17 @@ mov edx, offset rulesDoge
   mov random, eax
   ; user choice
   ; guessing message
+choose4:
   mov edx, offset tryGuess
   call writestring
   call readint
   mov choice, eax
+; input validation
+  jo badInput4
+  cmp choice, 10
+  jg badInput4
+  cmp choice, 1
+  jl badInput4
   ; conditional
   sub eax, random
   cmp eax, 1
@@ -440,7 +479,13 @@ mov smol, al
 cmp smol, "1"
 je four
   jmp home
-
+badInput4:
+mov edx, offset errorMsg
+call writestring
+call crlf
+call waitmsg
+call clrscr
+jmp choose4
 ; Choice 5
 five:
   call clrscr 
@@ -540,10 +585,18 @@ mov edx, offset rulesImp
   dec credits
   ; user choice
   ; guessing message
+choose6:
   mov edx, offset tryGuess
   call writestring
   call readint
   mov choice, eax
+; input validation
+  jo badInput6
+  cmp choice, 10
+  jg badInput6
+  cmp choice, 1
+  jl badInput6
+
   ; bad job message
   mov edx, offset badGuess
   call writestring
@@ -566,7 +619,13 @@ mov smol, al
 cmp smol, "1"
 je six
   jmp home
-
+badInput6:
+mov edx, offset errorMsg
+call writestring
+call crlf
+call waitmsg
+call clrscr
+jmp choose6
 ; Choice 7
 seven:
   call clrscr
