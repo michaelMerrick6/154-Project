@@ -1,13 +1,12 @@
 ; ------------------------------------------------------------
-; main.asm is a program that ...
-; Ashutosh Bharadwaj
 ; CMPR - 154 - Spring 2024
-; March 27, 2024
-; Language: IA-32 x86
-; Assembler: Microsoft Macro Assembler (MASM)
-; Collaboration: Me
-; Unique Instructions: 15 (mov, call, jmp, cmp, jo, je, jne, jng, add, sub, inc, dec, mul, push, pop)
+; Team Name: Team Doge
+; Team Member Names: Ashutosh Bharadwaj, David Calderon, Josiah Liao, Michael Merrick
+; Creation Date: May 13, 2024
+; Collaboration: csudh.edu
 ; ----------------------------------------------------------
+
+; Unique Instructions: 15 (mov, call, jmp, cmp, jo, je, jne, jng, add, sub, inc, dec, mul, push, pop)
 
 INCLUDE Irvine32.inc
 
