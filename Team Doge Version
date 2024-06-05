@@ -11,7 +11,8 @@
 INCLUDE Irvine32.inc
 
 .data
-; main menu strings
+
+; Main menu strings
 chooseName byte "  _____   ____   _____ ______    _____                     _                _____   ", 13, 10
            byte " |  __ \ / __ \ / ____|  ____|  / ____|                   (_)              / ____|                      _ ", 13, 10
            byte " | |  | | |  | | |  __| |__    | |  __ _   _  ___  ___ ___ _ _ __   __ _  | |  __  __ _ _ __ ___   ___ (_)", 13, 10
@@ -32,13 +33,15 @@ choice6 byte "6: Play impossible game", 0
 choice7 byte "7: Exit game", 0
 errorMsg byte "Invalid input, please try again.", 0
 
-; choice 1 strings
+; Choice 1 strings
 creditMsg byte "Your available credit balance: ", 0
-; choice 2 strings
+
+; Choice 2 strings
 buyPremium byte "Press 'p' to purchase premium subscription ($10).", 0
 donate byte "Press 'd' to donate to Team Doge nonprofit organization. Every dollar helps!", 0
 buyCredits byte "Press 'c' to purchase additional credits.", 0
-; purchase strings
+
+; Purchase strings
 amountIfDonate byte "How much would you like to donate? ", 0
 amountIfCredits byte "How many credits would you like to purchase ($20 or less)? ", 0
 purchaseFailed byte "That is an invalid number of credits. Please try again.", 0
@@ -49,9 +52,11 @@ SSN byte "Social Security Number: ", 0
 address byte "Billing Address: ", 0
 pin byte "Please enter your PIN: ", 0
 purchaseExit byte "Thank you for your purchase. You will now be redirected to the main screen.", 0
-; choice 3 strings
+
+; Choice 3 strings
 noCredits byte "Not enough credits. Please buy more before playing.", 0
-; RULES are for losers
+
+; RULES for games
   rules byte "RULES:", 13, 10, 13, 10
          byte "If you guess the correct number,", 13, 10
          byte "you will earn $2.00. If you guess", 13, 10
@@ -61,14 +66,16 @@ goodGuess byte "Nice job! You guessed correctly!", 0
 oneGuess byte "You were one off the correct answer. You will still gain money, but the correct answer was ", 0
 badGuess byte "Too bad. You guessed incorrectly. The correct answer was ", 0
 ifLoop byte "Press 1 to play again, press anything else to move to the home screen: ", 0
-; choice 4 strings
+
+; Choice 4 strings
 rulesDoge byte "RULES:", 13, 10, 13, 10
          byte "If you guess the correct number,", 13, 10
          byte "you will earn $6.00. If you guess", 13, 10
          byte "a number adjacent to the correct", 13, 10
          byte "number, you will earn $2.00. If you guess", 13, 10  
          byte "incorrectly, you will not earn any money.", 13, 10, 13, 10, 0
-; choice 5 strings
+
+; Choice 5 strings
 displayName byte "Name: ", 0
 displayGames byte "Games played: ", 0
 displayCorrect byte "Your correct guesses (regular verison): ", 0
@@ -79,12 +86,15 @@ displayBad byte "Your incorrect guesses (Doge version): ", 0
 displayImp byte "Your incorrect guesses (impossible version): ", 0
 displayGain byte "Money gained: $", 0
 displayLoss byte "Money lost: $", 0
-; choice 6 strings
+
+; Choice 6 strings
 rulesImp byte "RULES:", 13, 10, 13, 10
            byte "The game is impossible. That's it. Good luck!", 0
-; choice 7 strings
+
+; Choice 7 strings
 exitMsg byte "Goodbye! Thanks for playing!", 0
-; variables
+
+; Variables
 maxLength equ 80
 credits dword 0
 MAX_ALLOWED equ 20
@@ -100,13 +110,12 @@ isPremiumUser byte 0
 choice dword 0
 random dword 0
 smol byte 0
-; ad messages
 
 .code
 
 main proc
 
-; Get name
+; Get user's name
 mov edx, offset chooseName
 call writestring
 mov edx, offset username
@@ -145,7 +154,7 @@ readChoice:
   mov choice, eax
   jo badChoice  
 
-; Switch statement
+; Switch statement for choices from main menu
   cmp choice, 1
   je one
   cmp choice, 2
@@ -161,7 +170,7 @@ readChoice:
   cmp choice, 7
   je seven
 
-; Error message
+; Error message for invalid selection
 badChoice:
   mov edx, offset errorMsg
   call writestring
@@ -183,7 +192,7 @@ one:
 ; Choice 2
 two:
   call clrscr
-; choose purchase
+; Choose purchase
 mov edx, offset buyCredits
 call writestring
 call crlf
@@ -326,42 +335,41 @@ mov eax, 2000
 call delay
 jmp home
 play3:
-  ; make the game yay
-  ; rules yay
+  ; Rules yay
   mov eax, correctGuesses
   add eax, missedGuesses
   cmp eax, 0
   jne norules3
-  ; show rules
+  ; Show rules
 mov edx, offset rules
  call writestring
   call waitmsg
   call clrscr
   norules3:
-  ; random number
+  ; Random number
   dec credits
   mov eax, 10
   call randomrange
   inc eax
   mov random, eax
-  ; user choice
-  ; guessing message
+  ; User choice
+  ; Guessing message
   choose3:
   mov edx, offset tryGuess
   call writestring
   call readint
   mov choice, eax
-; input validation
+; Input validation
   jo badInput3
   cmp choice, 10
   jg badInput3
   cmp choice, 1
   jl badInput3
 
-  ; conditional
+  ; Conditional
   cmp eax, random
   jne incorrect3
-  ; good job message
+  ; Good job message if win
   mov edx, offset goodGuess
   call writestring
   inc correctGuesses
@@ -370,14 +378,14 @@ mov edx, offset rules
   call waitmsg
   jmp home
   incorrect3:
-  ; bad job message
+  ; Bad job message if loss
   mov edx, offset badGuess
   call writestring
   mov eax, random
   call writedec
   call crlf
   inc missedGuesses
-  ; loop game
+  ; Loop game
 mov edx, offset ifLoop
 call writestring
 call readchar
@@ -403,34 +411,33 @@ call writestring
 mov eax, 2000
 call delay
 jmp home
-play4:
-  ; make the game yay   
-  ; rules yay
+play4:  
+  ; Rules yay
   mov eax, correctGuessesDoge
   add eax, missedGuessesDoge
   cmp eax, 0
   jne norules4
-  ; show rules
+  ; Show rules
 mov edx, offset rulesDoge
  call writestring
   call waitmsg
   call clrscr
 
   norules4:
-  ; random number
+  ; Random number
   dec credits
   mov eax, 10
   call randomrange
   inc eax
   mov random, eax
-  ; user choice
-  ; guessing message
+  ; User choice
+  ; Guessing message
 choose4:
   mov edx, offset tryGuess
   call writestring
   call readint
   mov choice, eax
-; input validation
+; Input validation
   jo badInput4
   cmp choice, 10
   jg badInput4
@@ -445,7 +452,7 @@ je oneaway
 mov eax, choice
 cmp eax, random
   jne incorrect4
-  ; good job message
+  ; Good job message if win
   mov edx, offset goodGuess
   call writestring
   inc correctGuessesDoge
@@ -453,7 +460,7 @@ cmp eax, random
   call crlf
   jmp loops
   incorrect4:
-  ; bad job message
+  ; Bad job message if loss
   mov edx, offset badGuess
   call writestring
   mov eax, random
@@ -470,7 +477,7 @@ inc oneGuessesDoge
 add credits, 2
 call crlf
 
-  ; loop game
+  ; Loop game
 loops:
 mov edx, offset ifLoop
 call writestring
@@ -486,10 +493,11 @@ call crlf
 call waitmsg
 call clrscr
 jmp choose4
+
 ; Choice 5
 five:
   call clrscr 
-  ; display stats
+  ; Display stats
   mov edx, offset displayName
   call writestring
   mov edx, offset username
@@ -568,36 +576,35 @@ mov eax, 2000
 call delay
 jmp home
 play:
-  ; make the game yay
-  ; rules yay
+  ; Rules yay
   mov eax, correctGuesses
   add eax, missedGuesses
   cmp eax, 0
   jne norules
-  ; show rules
+  ; Show rules
 mov edx, offset rulesImp
  call writestring
  call crlf
   call waitmsg
   call clrscr
   norules:
-  ; random number
+  ; Random number
   dec credits
-  ; user choice
-  ; guessing message
+  ; User choice
+  ; Guessing message
 choose6:
   mov edx, offset tryGuess
   call writestring
   call readint
   mov choice, eax
-; input validation
+; Input validation
   jo badInput6
   cmp choice, 10
   jg badInput6
   cmp choice, 1
   jl badInput6
 
-  ; bad job message
+  ; Bad job message if loss
   mov edx, offset badGuess
   call writestring
   mov eax, choice
@@ -611,7 +618,7 @@ print:
   call writedec
   call crlf
   inc guessImp
-  ; loop game
+  ; Loop game
 mov edx, offset ifLoop
 call writestring
 call readchar
@@ -626,10 +633,11 @@ call crlf
 call waitmsg
 call clrscr
 jmp choose6
+
 ; Choice 7
 seven:
   call clrscr
-  ; exit game
+  ; EXIT game
   mov edx, offset exitMsg
   call writestring
   call crlf
